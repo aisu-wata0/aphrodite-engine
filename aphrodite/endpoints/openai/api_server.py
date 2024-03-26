@@ -209,6 +209,18 @@ async def tokenize(request: Request,
     return JSONResponse(content=tokenized)
 
 
+@app.post("/v1/tokenize_batch")
+@app.post("/v1/token/encode_batch")
+async def tokenize_batch(request: Request,
+                         prompt_list: List[Prompt],
+                         x_api_key: Optional[str] = Header(None)):
+    tokenized_list = []
+    for prompt in prompt_list:
+        tokenized = await openai_serving_chat.tokenize(prompt)
+        tokenized_list.append(tokenized)
+    return JSONResponse(content=tokenized_list)
+
+
 @app.post("/v1/detokenize")
 @app.post("/v1/token/decode")
 async def detokenize(request: Request,
